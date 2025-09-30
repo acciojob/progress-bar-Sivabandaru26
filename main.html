@@ -1,16 +1,156 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Progress Bar Component</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+    }
+
+    .container {
+      text-align: center;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+
+    /* Background line */
+    .progress-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 4px;
+      width: 100%;
+      background-color: #ddd;
+      transform: translateY(-50%);
+      z-index: -1;
+    }
+
+    /* Filling line */
+    .progress {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 4px;
+      width: 0%;
+      background-color: #3498db;
+      transform: translateY(-50%);
+      z-index: -1;
+      transition: width 0.3s ease;
+    }
+
+    .circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid #ddd;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      color: #999;
+      transition: all 0.3s ease;
+    }
+
+    .circle.active {
+      border-color: #3498db;
+      color: #3498db;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #3498db;
+      color: white;
+      transition: background 0.3s ease;
+    }
+
+    button:disabled {
+      background-color: #ddd;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+  <div class="container">
+    <div class="progress-container">
+      <div class="progress" id="progress"></div>
+      <div class="circle active" id="circle-1">1</div>
+      <div class="circle" id="circle-2">2</div>
+      <div class="circle" id="circle-3">3</div>
+      <div class="circle" id="circle-4">4</div>
+      <div class="circle" id="circle-5">5</div>
+    </div>
 
+    <button id="prev" disabled>Previous</button>
+    <button id="next">Next</button>
+  </div>
+
+  <script>
+    const progress = document.getElementById('progress');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    const circles = document.querySelectorAll('.circle');
+
+    let currentStep = 1;
+
+    next.addEventListener('click', () => {
+      currentStep++;
+      if (currentStep > circles.length) {
+        currentStep = circles.length;
+      }
+      update();
+    });
+
+    prev.addEventListener('click', () => {
+      currentStep--;
+      if (currentStep < 1) {
+        currentStep = 1;
+      }
+      update();
+    });
+
+    function update() {
+      circles.forEach((circle, index) => {
+        if (index < currentStep) {
+          circle.classList.add('active');
+        } else {
+          circle.classList.remove('active');
+        }
+      });
+
+      const actives = document.querySelectorAll('.circle.active');
+      progress.style.width = ((actives.length - 1) / (circles.length - 1)) * 100 + '%';
+
+      // Button states
+      prev.disabled = currentStep === 1;
+      next.disabled = currentStep === circles.length;
+    }
+  </script>
 </body>
-
 </html>
